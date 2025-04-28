@@ -1,9 +1,8 @@
-import PostList from "@/components/PostCard";
+import React from "react";
+import PostList from "./pages/PostList";
 
-export default function HomePage() {
-  return (
-    <div>
-      <PostList />
-    </div>
-  );
-}
+const RootPage = () => {
+  return <PostList />;
+};
+
+export default RootPage;
