@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { serverUrl } from "@/environment";
 
 interface CommentsProps {
   postId: string;
@@ -11,7 +12,7 @@ interface Comment {
   id: string;
   content: string;
   userId: string;
-  createdAt: string;
+  createdAt: string; // use string since JSON dates come as strings
   updatedAt: string;
   postId: string | null;
 }
@@ -24,10 +25,9 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const fetchComments = useCallback(async () => {
     try {
-      const response = await fetch(
-        `https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/on/${postId}`,
-        { credentials: "include" }
-      );
+      const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setComments(data.comments);
@@ -43,17 +43,14 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleAddComment = async () => {
     try {
-      const response = await fetch(
-        `https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/on/${postId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ content }),
-        }
-      );
+      const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ content }),
+      });
 
       if (response.status === 401) {
         router.push("/login");
@@ -75,13 +72,10 @@ const Comments = ({ postId }: CommentsProps) => {
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const response = await fetch(
-        `https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/${commentId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${serverUrl}/comments/${commentId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       if (response.status === 401) {
         router.push("/login");
@@ -107,7 +101,7 @@ const Comments = ({ postId }: CommentsProps) => {
   };
 
   useEffect(() => {
-    fetchComments();
+    fetchComments(); // Safe to use here due to useCallback
   }, [fetchComments]);
 
   return (

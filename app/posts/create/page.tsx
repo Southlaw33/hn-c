@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
+import { serverUrl } from "@/environment";
 
 const CreatePostPage = () => {
   const { data: session } = betterAuthClient.useSession();
@@ -27,24 +28,22 @@ const CreatePostPage = () => {
       alert("Title is required!");
       return;
     }
-
     setIsSubmitting(true);
-
     try {
-      const res = await fetch("https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts", {
+      const res = await fetch(`${serverUrl}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({
           title: formData.title,
           content: formData.content,
         }),
+        credentials: "include",
       });
 
       if (!res.ok) {
-        const errorData: { error?: string } = await res.json();
+        const errorData = await res.json();
         throw new Error(errorData.error || "Failed to create post");
       }
 
@@ -57,7 +56,7 @@ const CreatePostPage = () => {
         console.error("Create post error:", error);
         alert(error.message || "An error occurred while creating post.");
       } else {
-        console.error("Unknown error occurred.");
+        console.error("Unknown error:", error);
         alert("An unknown error occurred while creating post.");
       }
     } finally {

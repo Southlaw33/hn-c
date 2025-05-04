@@ -5,8 +5,7 @@ import { PropsWithChildren } from "react";
 
 export const metadata = {
   title: "Hacker News",
-  description:
-    "A clone of Hacker News built with Next.js and TypeScript - by Atchutha Rao T A",
+  description: "Built by kethan",
 };
 
 const RootLayout = (props: PropsWithChildren) => {

@@ -21,6 +21,27 @@ const SignUpPage = () => {
       [e.target.name]: e.target.value,
     }));
   };
+  // const handleSignUp = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await betterAuthClient.signUp.email({
+  //       username: formData.username,
+  //       email: formData.email,
+  //       name: formData.name,
+  //       password: formData.password,
+  //     });
+  //     if ('user' in response && response.user) {
+  //       router.push("/");
+  //     } else {
+  //       alert(  response.error || "Signup failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Signup error:", error);
+  //     alert("An error occurred during signup. Please try again.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleSignUp = async () => {
     setIsLoading(true);

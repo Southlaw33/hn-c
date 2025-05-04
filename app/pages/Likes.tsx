@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { serverUrl } from "@/environment";
 
 interface LikesProps {
   postId: string;
@@ -19,7 +20,8 @@ const Likes = ({ postId }: LikesProps) => {
 
   const fetchLikes = useCallback(async () => {
     try {
-      const response = await fetch(`https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/likes/on/${postId}`, {
+      const response = await fetch(`${serverUrl}/likes/on/${postId}`, {
+        method: "GET",
         credentials: "include",
       });
 
@@ -27,38 +29,32 @@ const Likes = ({ postId }: LikesProps) => {
         const data: LikesResponse = await response.json();
         setLikesCount(data.likes.length);
         setLiked(data.likedByCurrentUser);
+      } else if (response.status === 401) {
+        setLiked(false);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to fetch likes:", error.message);
-      } else {
-        console.error("Failed to fetch likes.");
-      }
+      console.error("Failed to fetch likes.");
     }
   }, [postId]);
 
   const handleLike = async () => {
     try {
       const method = liked ? "DELETE" : "POST";
-      const response = await fetch(`https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/likes/on/${postId}`, {
+      const response = await fetch(`${serverUrl}/likes/on/${postId}`, {
         method,
         credentials: "include",
       });
 
       if (response.status === 401) {
-        router.push("/auth/login");
+        router.push("/login");
         return;
       }
 
       if (response.ok) {
-        fetchLikes(); // Refresh after like/unlike
+        fetchLikes();
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error liking the post:", error.message);
-      } else {
-        console.error("Error liking the post.");
-      }
+      console.error("Error toggling like.");
     }
   };
 

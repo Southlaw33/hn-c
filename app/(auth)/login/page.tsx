@@ -26,6 +26,7 @@ const LoginPage = () => {
         username: loginData.username,
         password: loginData.password,
       });
+
       if ("data" in response && response.data?.user) {
         router.push("/");
       } else {
@@ -38,6 +39,11 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+  // useEffect(() => {
+  //   if (data?.user) {
+  //     console.log("Logged in:", data.user);
+  //   }
+  // }, [data]);
   return (
     <>
       <NavigationBar hideNavItems />

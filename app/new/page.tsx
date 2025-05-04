@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -20,12 +21,9 @@ const NewPostsPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(
-          "https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts",
-          {
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${serverUrl}/posts`,{
+          credentials: "include",
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }
@@ -58,9 +56,7 @@ const NewPostsPage = () => {
   const todaysPosts = posts.filter((post) => isToday(post.createdAt));
 
   if (isLoading) {
-    return (
-      <div className="text-center text-gray-600 mt-10">Loading posts...</div>
-    );
+    return <div className="text-center text-gray-600 mt-10">Loading posts...</div>;
   }
 
   if (error) {
@@ -68,11 +64,7 @@ const NewPostsPage = () => {
   }
 
   if (todaysPosts.length === 0) {
-    return (
-      <div className="text-center text-gray-600 mt-10">
-        No posts created today.
-      </div>
-    );
+    return <div className="text-center text-gray-600 mt-10">No posts created today.</div>;
   }
 
   return (
@@ -82,10 +74,7 @@ const NewPostsPage = () => {
           key={post.id}
           className="border rounded-lg p-4 shadow hover:shadow-md transition"
         >
-          <Link
-            href={`/posts/${post.id}`}
-            className="text-lg font-semibold text-blue-700 hover:underline"
-          >
+          <Link href={`/posts/${post.id}`} className="text-lg font-semibold text-blue-700 hover:underline">
             {post.title}
           </Link>
           <p className="mt-2 text-gray-700">{post.content}</p>

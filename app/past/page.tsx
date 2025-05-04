@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -20,7 +21,7 @@ const PastPostsPage = () => {
   useEffect(() => {
     const fetchPastPosts = async () => {
       try {
-        const response = await fetch("https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts", {
+        const response = await fetch(`${serverUrl}/posts`, {
           credentials: "include",
         });
 

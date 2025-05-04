@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Likes from "./Likes";
 import Comments from "./comments";
+import { serverUrl } from "@/environment";
 
 interface Post {
   id: string;
@@ -23,11 +24,10 @@ const PostList = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts");
+        const response = await fetch(`${serverUrl}/posts`);
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }
-
         const data: { posts: Post[] } = await response.json();
         setPosts(data.posts);
       } catch (err: unknown) {
@@ -98,6 +98,7 @@ const PostList = () => {
           <div className="text-sm text-gray-500 mt-2">
             Posted on {post.createdAt}
           </div>
+
           <div className="mt-4 flex gap-4 items-center">
             <Likes postId={post.id} />
             <Comments postId={post.id} />

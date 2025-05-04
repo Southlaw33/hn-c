@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { serverUrl } from "@/environment";
 
 interface Comment {
   id: string;
@@ -37,7 +38,7 @@ const UserCommentsPage = () => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          "https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/me",
+          `${serverUrl}/comments/me`,
           {
             method: "GET",
             credentials: "include",

@@ -1,6 +1,7 @@
 "use client";
 
-import { betterAuthClient } from "@/lib/integrations/better-auth/index";
+import { serverUrl } from "@/environment";
+import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useEffect, useState } from "react";
 
 interface Post {
@@ -46,7 +47,7 @@ const UserProfilePage = () => {
       if (!data?.user?.id) return;
 
       try {
-        const res = await fetch(`http://localhost:3000/users/me`, {
+        const res = await fetch(`${serverUrl}/users/me`, {
           method: "GET",
           credentials: "include",
         });
