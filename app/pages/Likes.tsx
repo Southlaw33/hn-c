@@ -33,7 +33,7 @@ const Likes = ({ postId }: LikesProps) => {
         setLiked(false);
       }
     } catch (error) {
-      console.error("Failed to fetch likes.");
+      console.error("Failed to fetch likes:", error);
     }
   }, [postId]);
 
@@ -54,7 +54,7 @@ const Likes = ({ postId }: LikesProps) => {
         fetchLikes();
       }
     } catch (error) {
-      console.error("Error toggling like.");
+      console.error("Error toggling like:", error);
     }
   };
 
