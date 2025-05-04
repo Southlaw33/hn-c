@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { betterAuthClient } from "@/lib/integrations";
 import { useRouter } from "next/navigation";
 
 const CreatePostPage = () => {
@@ -31,7 +31,7 @@ const CreatePostPage = () => {
     try {
       const res = await fetch("http://localhost:3000/posts", {
         method: "POST",
-        
+
         headers: {
           "Content-Type": "application/json",
           // BetterAuth automatically sets cookies/session, no need to manually set Authorization

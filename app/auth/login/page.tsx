@@ -1,5 +1,5 @@
 "use client";
-import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { betterAuthClient } from "@/lib/integrations";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -26,7 +26,7 @@ const LoginPage = () => {
         username: loginData.username,
         password: loginData.password,
       });
-      if ('data' in response && response.data?.user) {
+      if ("data" in response && response.data?.user) {
         router.push("/");
       } else {
         alert("Login failed. Please check your username and password.");
@@ -79,7 +79,10 @@ const LoginPage = () => {
                 <span className="text-black">
                   Don&apos;t have an account?&nbsp;
                 </span>
-                <Link href="/auth/sign-up" className="text-blue-600 hover:underline">
+                <Link
+                  href="/auth/sign-up"
+                  className="text-blue-600 hover:underline"
+                >
                   Create account
                 </Link>
               </div>

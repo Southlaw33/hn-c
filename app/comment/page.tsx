@@ -25,8 +25,9 @@ const UserCommentsPage = () => {
     const fetchComments = async () => {
       try {
         const response = await fetch("http://localhost:3000/comments/me", {
-          credentials: "include", // important if you need to send cookies/session
+          credentials: "include",
         });
+
         if (!response.ok) {
           if (response.status === 404) {
             setComments([]);
@@ -34,17 +35,22 @@ const UserCommentsPage = () => {
           }
           throw new Error("Failed to fetch comments.");
         }
-        const data = await response.json();
-        setComments(data.comments); // Assuming API returns { comments: [...] }
-      } catch (err: any) {
-        setError(err.message || "Something went wrong.");
+
+        const data: { comments: Comment[] } = await response.json();
+        setComments(data.comments);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Something went wrong.");
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchComments();
-  }, []);
+  }, []); // no fetchComments in deps, it's declared inline so this is fine
 
   if (isLoading) {
     return (
