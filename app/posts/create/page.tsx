@@ -27,20 +27,19 @@ const CreatePostPage = () => {
       alert("Title is required!");
       return;
     }
+
     setIsSubmitting(true);
     try {
       const res = await fetch("http://localhost:3000/posts", {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
-          // BetterAuth automatically sets cookies/session, no need to manually set Authorization
         },
+        credentials: "include",
         body: JSON.stringify({
           title: formData.title,
           content: formData.content,
         }),
-        credentials: "include", // Important: sends cookies/session
       });
 
       if (!res.ok) {
@@ -51,10 +50,14 @@ const CreatePostPage = () => {
       const data = await res.json();
       console.log("Post created:", data);
       alert("Post created successfully!");
-      router.push("/"); // Redirect to home page or post list
-    } catch (error: any) {
+      router.push("/");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while creating the post.";
       console.error("Create post error:", error);
-      alert(error.message || "An error occurred while creating post.");
+      alert(message);
     } finally {
       setIsSubmitting(false);
     }
