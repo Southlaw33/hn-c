@@ -37,7 +37,7 @@ const UserCommentsPage = () => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          "https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/comments/me",
+          "https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/me",
           {
             method: "GET",
             credentials: "include",

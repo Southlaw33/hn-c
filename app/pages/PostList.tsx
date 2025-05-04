@@ -23,7 +23,7 @@ const PostList = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:3000/posts");
+        const response = await fetch("https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts");
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }

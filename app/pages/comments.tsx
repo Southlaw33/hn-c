@@ -25,7 +25,7 @@ const Comments = ({ postId }: CommentsProps) => {
   const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/comments/on/${postId}`,
+        `https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/on/${postId}`,
         { credentials: "include" }
       );
       if (response.ok) {
@@ -44,7 +44,7 @@ const Comments = ({ postId }: CommentsProps) => {
   const handleAddComment = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/comments/on/${postId}`,
+        `https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/on/${postId}`,
         {
           method: "POST",
           headers: {
@@ -76,7 +76,7 @@ const Comments = ({ postId }: CommentsProps) => {
   const handleDeleteComment = async (commentId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/comments/${commentId}`,
+        `https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/comments/${commentId}`,
         {
           method: "DELETE",
           credentials: "include",

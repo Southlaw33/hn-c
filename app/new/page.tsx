@@ -20,9 +20,12 @@ const NewPostsPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:3000/posts", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts",
+          {
+            credentials: "include",
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }

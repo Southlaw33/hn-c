@@ -23,7 +23,7 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/posts/${id}`);
+        const response = await fetch(`https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/posts/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch post.");
         }

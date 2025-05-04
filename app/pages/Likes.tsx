@@ -19,7 +19,7 @@ const Likes = ({ postId }: LikesProps) => {
 
   const fetchLikes = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:3000/likes/on/${postId}`, {
+      const response = await fetch(`https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/likes/on/${postId}`, {
         credentials: "include",
       });
 
@@ -40,7 +40,7 @@ const Likes = ({ postId }: LikesProps) => {
   const handleLike = async () => {
     try {
       const method = liked ? "DELETE" : "POST";
-      const response = await fetch(`http://localhost:3000/likes/on/${postId}`, {
+      const response = await fetch(`https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io/likes/on/${postId}`, {
         method,
         credentials: "include",
       });

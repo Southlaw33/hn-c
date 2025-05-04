@@ -3,6 +3,7 @@ import { createAuthClient } from "better-auth/react";
 import { usernameClient } from "better-auth/client/plugins";
 
 export const betterAuthClient = createAuthClient({
-  baseURL: "http://localhost:3000",
+  baseURL:
+    "https://hackernews.yellowflower-336119c8.centralindia.azurecontainerapps.io",
   plugins: [nextCookies(), usernameClient()],
 });
