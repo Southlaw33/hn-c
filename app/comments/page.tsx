@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { betterAuthClient } from "@/lib/integrations/better-auth";
 
 interface Comment {
   id: string;
@@ -19,15 +21,28 @@ interface Comment {
 const UserCommentsPage = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const { data: session } = betterAuthClient.useSession();
+
+  useEffect(() => {
+    if (session !== undefined) {
+      setSessionLoading(false);
+    }
+  }, [session]);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch("http://localhost:3000/comments/me", {
-          credentials: "include", // important if you need to send cookies/session
-        });
-
+        const response = await fetch(
+          "https://hackernews.kindbay-5679c40b.centralindia.azurecontainerapps.io/comments/me",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
         if (!response.ok) {
           if (response.status === 404) {
             setComments([]);
@@ -35,12 +50,11 @@ const UserCommentsPage = () => {
           }
           throw new Error("Failed to fetch comments.");
         }
-
-        const data: { comments: Comment[] } = await response.json();
+        const data = await response.json();
         setComments(data.comments);
-      } catch (err) {
+      } catch (err: unknown) {
         if (err instanceof Error) {
-          setError(err.message);
+          setError(err.message || "Something went wrong.");
         } else {
           setError("Something went wrong.");
         }
@@ -49,8 +63,45 @@ const UserCommentsPage = () => {
       }
     };
 
-    fetchComments();
-  }, []);
+    if (session?.user) {
+      fetchComments();
+    }
+  }, [session]);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString([], {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  if (sessionLoading) {
+    return (
+      <div className="text-center text-gray-600 mt-10">Loading comments...</div>
+    );
+  }
+
+  if (!session?.user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#F1F1DB]">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-md">
+          <h2 className="text-2xl font-bold mb-4 text-red-600">
+            You must be logged in to view your comments!
+          </h2>
+          <button
+            onClick={() => router.push("/login")}
+            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -64,7 +115,14 @@ const UserCommentsPage = () => {
 
   if (comments.length === 0) {
     return (
-      <div className="text-center text-gray-600 mt-10">No comments yet.</div>
+      <div className="text-center text-gray-600 mt-10">
+        No comments yet.
+        <div className="mt-4">
+          <Link href="/" className="text-blue-600 hover:underline">
+            Browse Posts
+          </Link>
+        </div>
+      </div>
     );
   }
 
@@ -90,7 +148,7 @@ const UserCommentsPage = () => {
           </div>
           <p className="text-gray-800">{comment.content}</p>
           <div className="text-xs text-gray-400 mt-2">
-            {new Date(comment.createdAt).toLocaleString()}
+            {formatDate(comment.createdAt)}
           </div>
         </div>
       ))}

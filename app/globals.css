@@ -1,1 +1,4 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+@source "../node_modules/@daveyplate/better-auth-ui";

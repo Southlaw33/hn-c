@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-
-import { useRouter } from "next/navigation";
 import Likes from "./Likes";
 import Comments from "./comments";
 
@@ -12,27 +10,32 @@ interface Post {
   title: string;
   content: string;
   userId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const PostList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [formattedPosts, setFormattedPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/posts`);
+        const response = await fetch("http://localhost:3000/posts");
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }
-        const data = await response.json();
+
+        const data: { posts: Post[] } = await response.json();
         setPosts(data.posts);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong.");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Something went wrong.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -40,6 +43,25 @@ const PostList = () => {
 
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    if (posts.length > 0) {
+      setFormattedPosts(
+        posts.map((post) => ({
+          ...post,
+          createdAt: new Date(post.createdAt).toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+            timeZone: "Asia/Kolkata",
+          }),
+        }))
+      );
+    }
+  }, [posts]);
 
   if (isLoading) {
     return (
@@ -61,7 +83,7 @@ const PostList = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-6 space-y-8">
-      {posts.map((post) => (
+      {formattedPosts.map((post) => (
         <div
           key={post.id}
           className="border rounded-lg p-6 shadow hover:shadow-md transition"
@@ -74,9 +96,8 @@ const PostList = () => {
           </Link>
           <p className="mt-2 text-gray-700">{post.content}</p>
           <div className="text-sm text-gray-500 mt-2">
-            Posted on {new Date(post.createdAt).toLocaleDateString()}
+            Posted on {post.createdAt}
           </div>
-
           <div className="mt-4 flex gap-4 items-center">
             <Likes postId={post.id} />
             <Comments postId={post.id} />

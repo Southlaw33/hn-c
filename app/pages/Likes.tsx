@@ -1,10 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface LikesProps {
   postId: string;
+}
+
+interface LikesResponse {
+  likes: Array<{ id: string }>;
+  likedByCurrentUser: boolean;
 }
 
 const Likes = ({ postId }: LikesProps) => {
@@ -12,21 +17,25 @@ const Likes = ({ postId }: LikesProps) => {
   const [liked, setLiked] = useState(false);
   const router = useRouter();
 
-  const fetchLikes = async () => {
+  const fetchLikes = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:3000/likes/on/${postId}`, {
         credentials: "include",
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data: LikesResponse = await response.json();
         setLikesCount(data.likes.length);
-        setLiked(data.likedByCurrentUser); // <-- Important
+        setLiked(data.likedByCurrentUser);
       }
     } catch (error) {
-      console.error("Failed to fetch likes", error);
+      if (error instanceof Error) {
+        console.error("Failed to fetch likes:", error.message);
+      } else {
+        console.error("Failed to fetch likes.");
+      }
     }
-  };
+  }, [postId]);
 
   const handleLike = async () => {
     try {
@@ -42,17 +51,20 @@ const Likes = ({ postId }: LikesProps) => {
       }
 
       if (response.ok) {
-        // Instead of guessing, refetch properly
-        fetchLikes();
+        fetchLikes(); // Refresh after like/unlike
       }
     } catch (error) {
-      console.error("Error liking the post", error);
+      if (error instanceof Error) {
+        console.error("Error liking the post:", error.message);
+      } else {
+        console.error("Error liking the post.");
+      }
     }
   };
 
   useEffect(() => {
     fetchLikes();
-  }, []);
+  }, [fetchLikes]);
 
   return (
     <button

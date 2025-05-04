@@ -12,23 +12,34 @@ interface Post {
   updatedAt: string;
 }
 
-const NewPostsPage = () => {
+const PastPostsPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchPastPosts = async () => {
       try {
         const response = await fetch("http://localhost:3000/posts", {
           credentials: "include",
         });
+
         if (!response.ok) {
           throw new Error("Failed to fetch posts.");
         }
-        const data = await response.json();
-        setPosts(data.posts);
-      } catch (err) {
+
+        const data: { posts: Post[] } = await response.json();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set time to midnight
+
+        const pastPosts = data.posts.filter((post) => {
+          const postDate = new Date(post.createdAt);
+          return postDate < today;
+        });
+
+        setPosts(pastPosts);
+      } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
         } else {
@@ -39,24 +50,14 @@ const NewPostsPage = () => {
       }
     };
 
-    fetchPosts();
+    fetchPastPosts();
   }, []);
-
-  const isToday = (dateString: string) => {
-    const postDate = new Date(dateString);
-    const today = new Date();
-    return (
-      postDate.getFullYear() === today.getFullYear() &&
-      postDate.getMonth() === today.getMonth() &&
-      postDate.getDate() === today.getDate()
-    );
-  };
-
-  const todaysPosts = posts.filter((post) => isToday(post.createdAt));
 
   if (isLoading) {
     return (
-      <div className="text-center text-gray-600 mt-10">Loading posts...</div>
+      <div className="text-center text-gray-600 mt-10">
+        Loading past posts...
+      </div>
     );
   }
 
@@ -64,17 +65,15 @@ const NewPostsPage = () => {
     return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
   }
 
-  if (todaysPosts.length === 0) {
+  if (posts.length === 0) {
     return (
-      <div className="text-center text-gray-600 mt-10">
-        No posts created today.
-      </div>
+      <div className="text-center text-gray-600 mt-10">No posts in past.</div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto mt-6 space-y-4">
-      {todaysPosts.map((post) => (
+      {posts.map((post) => (
         <div
           key={post.id}
           className="border rounded-lg p-4 shadow hover:shadow-md transition"
@@ -85,14 +84,14 @@ const NewPostsPage = () => {
           >
             {post.title}
           </Link>
-          <p className="mt-2 text-gray-700">{post.content}</p>
           <div className="text-sm text-gray-500 mt-1">
-            Posted today at {new Date(post.createdAt).toLocaleTimeString()}
+            Posted on {new Date(post.createdAt).toLocaleDateString()}
           </div>
+          <p className="mt-2 text-gray-700">{post.content}</p>
         </div>
       ))}
     </div>
   );
 };
 
-export default NewPostsPage;
+export default PastPostsPage;

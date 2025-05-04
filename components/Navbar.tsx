@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { betterAuthClient } from "@/lib/integrations/index";
+import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -58,11 +58,9 @@ const NavigationBar = ({ hideNavItems = false }: NavigationBarProps) => {
       {/* Right side - Auth buttons */}
       <div className="flex items-center space-x-4 text-sm">
         <div className="border-r border-black px-2">
-          
-        <Link href="/user" className="hover:text-amber-300">
-      {data?.user.username}
-    </Link>
-
+          <Link href="/user" className="hover:text-amber-300">
+            {data?.user.username}
+          </Link>
         </div>
         <div>
           {!data?.user ? (

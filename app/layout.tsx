@@ -1,7 +1,13 @@
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
+
+export const metadata = {
+  title: "Hacker News",
+  description:
+    "A clone of Hacker News built with Next.js and TypeScript - by Atchutha Rao T A",
+};
 
 const RootLayout = (props: PropsWithChildren) => {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { betterAuthClient } from "@/lib/integrations";
+import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 
 const CreatePostPage = () => {
@@ -29,6 +29,7 @@ const CreatePostPage = () => {
     }
 
     setIsSubmitting(true);
+
     try {
       const res = await fetch("http://localhost:3000/posts", {
         method: "POST",
@@ -43,7 +44,7 @@ const CreatePostPage = () => {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData: { error?: string } = await res.json();
         throw new Error(errorData.error || "Failed to create post");
       }
 
@@ -52,12 +53,13 @@ const CreatePostPage = () => {
       alert("Post created successfully!");
       router.push("/");
     } catch (error: unknown) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while creating the post.";
-      console.error("Create post error:", error);
-      alert(message);
+      if (error instanceof Error) {
+        console.error("Create post error:", error);
+        alert(error.message || "An error occurred while creating post.");
+      } else {
+        console.error("Unknown error occurred.");
+        alert("An unknown error occurred while creating post.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -71,7 +73,7 @@ const CreatePostPage = () => {
             You must be logged in to create a post!
           </h2>
           <button
-            onClick={() => router.push("/auth/login")}
+            onClick={() => router.push("/login")}
             className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
           >
             Go to Login
