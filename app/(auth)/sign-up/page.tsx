@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import Link from "next/link";
-import NavigationBar from "@/components/Navbar";
+import NavigationBar from "@/app/components/Navbar";
 const SignUpPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
