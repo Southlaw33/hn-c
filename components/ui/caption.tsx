@@ -9,11 +9,7 @@ export const Caption = ({
 }) => {
   return (
     <div
-      className={cn(
-        "text-sm",
-        variant == "info" && "text-muted-foreground",
-        variant === "error" && "text-destructive"
-      )}
+      className={cn("text-sm", variant == "info" && "text-muted-foreground", variant === "error" && "text-destructive")}
     >
       {children}
     </div>
