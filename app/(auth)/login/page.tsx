@@ -52,7 +52,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <NavigationBar hideNavItems />
+      <NavigationBar />
       {!data?.user && (
         <div className="flex items-center justify-center min-h-[calc(100vh-3rem)] bg-muted">
           <Card className="w-full max-w-md">

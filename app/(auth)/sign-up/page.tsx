@@ -1,21 +1,10 @@
 "use client";
-
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import Link from "next/link";
-import NavigationBar from "@/app/components/Navbar";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 
+import Link from "next/link";
+import FeedNavigationBar from "@/app/components/Navbar";
 const SignUpPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -26,17 +15,40 @@ const SignUpPage = () => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
+  // const handleSignUp = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await betterAuthClient.signUp.email({
+  //       username: formData.username,
+  //       email: formData.email,
+  //       name: formData.name,
+  //       password: formData.password,
+  //     });
+  //     if ('user' in response && response.user) {
+  //       router.push("/");
+  //     } else {
+  //       alert(  response.error || "Signup failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Signup error:", error);
+  //     alert("An error occurred during signup. Please try again.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleSignUp = async () => {
     setIsLoading(true);
     try {
+      const data = await betterAuthClient.getSession();
+      console.log(data);
+
       const { error } = await betterAuthClient.signUp.email(
         {
           username: formData.username,
@@ -45,10 +57,12 @@ const SignUpPage = () => {
           password: formData.password,
         },
         {
-          onRequest: () => setIsLoading(true),
+          onRequest: () => {
+            setIsLoading(true);
+          },
           onSuccess: () => {
             setIsLoading(false);
-            router.push("/");
+            router.push("/"); // or wherever you want to redirect after signup
           },
           onError: (ctx) => {
             setIsLoading(false);
@@ -60,8 +74,8 @@ const SignUpPage = () => {
       if (error) {
         alert(error.message || "Signup failed. Please try again.");
       }
-    } catch (err) {
-      console.error("Signup error:", err);
+    } catch {
+      console.error("Signup error:");
       alert("An unexpected error occurred.");
     } finally {
       setIsLoading(false);
@@ -69,78 +83,81 @@ const SignUpPage = () => {
   };
 
   return (
-    <>
-      <NavigationBar hideNavItems />
+    <> b
+      <FeedNavigationBar />
       {!data?.user && (
-        <div className="flex items-center justify-center min-h-[calc(100vh-3rem)] bg-muted">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">
-                Create Account
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
+        <div className="container mx-auto min-h-[calc(100vh-3rem)] flex items-center justify-center bg-[#F1F1DB]">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-center text-amber-900 mb-6">
+              Create Account
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Username
+                </label>
+                <input
+                  type="text"
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  placeholder="Choose a username"
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter your email"
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Enter your name"
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Create a password"
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <Button
+              <button
                 onClick={handleSignUp}
                 disabled={isLoading}
-                className="w-full"
+                className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors disabled:opacity-50"
               >
                 {isLoading ? "Creating account..." : "Sign Up"}
-              </Button>
-            </CardContent>
-            <CardFooter className="justify-center text-sm">
-              Already have an account?&nbsp;
-              <Link href="/login" className="text-blue-600 hover:underline">
-                Log In
-              </Link>
-            </CardFooter>
-          </Card>
+              </button>
+              <div className="text-center text-sm mt-4">
+                Already have an account?{" "}
+                <Link href="/login" className="text-blue-600 hover:underline">
+                  Log In
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>
   );
 };
-
 export default SignUpPage;

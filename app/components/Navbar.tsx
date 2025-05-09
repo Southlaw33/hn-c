@@ -1,127 +1,77 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
-  Home,
-  Users,
-  Briefcase,
-  MessageCircle,
-  Bell,
-  User,
-  Grid,
-  Star,
-} from "lucide-react";
+  DropdownMenu,
+  DropdownMenuLabel,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { LogOutIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
 
-interface NavigationBarProps {
-  hideNavItems?: boolean;
-}
-
-const NavigationBar = ({ hideNavItems = false }: NavigationBarProps) => {
-  const { data } = betterAuthClient.useSession();
+const FeedNavigationBar = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLogout = async () => {
-    try {
-      setIsLoading(true);
-      await betterAuthClient.signOut();
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      alert("Error logging out.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (hideNavItems) return null;
+  const { data } = betterAuthClient.useSession();
+  const user = data?.user;
 
   return (
-    <nav className="w-full bg-white border-b shadow-sm px-4 py-2 flex items-center justify-between">
-      {/* Left - Logo + Search */}
-      <div className="flex items-center space-x-4">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="bg-blue-600 w-8 h-8 rounded-sm text-white flex items-center justify-center font-bold text-lg">
-            in
-          </div>
-        </Link>
-        <div className="bg-gray-100 rounded px-3 py-1 text-sm text-gray-600 flex items-center">
-          <span className="mr-2">🔍</span>
-          Search
-        </div>
-      </div>
+    <div className="w-full border-b py-4">
+      <div className="w-5xl mx-auto flex flex-row items-center justify-between">
+        <span className="font-bold">Platinum</span>
+        {user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>{user.name}</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-56">
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    {user.image ? (
+                      <AvatarImage src={user.image} alt={user.name} />
+                    ) : (
+                      <AvatarFallback className="rounded-lg">
+                        {user.name[0]}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    const response = await betterAuthClient.signOut();
 
-      {/* Middle - Nav Links */}
-      <div className="flex space-x-6 text-xs text-center">
-        <Link
-          href="/"
-          className="flex flex-col items-center text-gray-700 hover:text-black"
-        >
-          <Home size={18} />
-          <span>Home</span>
-        </Link>
-        <Link
-          href="/network"
-          className="flex flex-col items-center text-gray-700 hover:text-black"
-        >
-          <Users size={18} />
-          <span>My Network</span>
-        </Link>
-        <Link
-          href="/jobs"
-          className="flex flex-col items-center text-gray-700 hover:text-black"
-        >
-          <Briefcase size={18} />
-          <span>Jobs</span>
-        </Link>
-        <Link
-          href="/messages"
-          className="flex flex-col items-center text-gray-700 hover:text-black"
-        >
-          <MessageCircle size={18} />
-          <span>Messaging</span>
-        </Link>
-        <Link
-          href="/notifications"
-          className="flex flex-col items-center text-gray-700 hover:text-black relative"
-        >
-          <Bell size={18} />
-          <span>Notifications</span>
-          <span className="absolute top-0 right-0 bg-red-600 text-white rounded-full text-[10px] px-1">
-            3
-          </span>
-        </Link>
-        <div className="flex flex-col items-center text-gray-700 hover:text-black">
-          <User size={18} />
-          <span>{data?.user.username ?? "Me"}</span>
-          {data?.user && (
-            <button
-              onClick={handleLogout}
-              disabled={isLoading}
-              className="text-[10px] text-blue-600 hover:underline"
-            >
-              {isLoading ? "Logging out..." : "Logout"}
-            </button>
-          )}
-        </div>
+                    if (response.data) {
+                      router.replace("/");
+                    }
+                  }}
+                >
+                  <LogOutIcon />
+                  Log Out
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
-
-      {/* Right - Extra Options */}
-      <div className="flex space-x-4 items-center text-sm">
-        <div className="flex flex-col items-center text-gray-700 hover:text-black">
-          <Grid size={18} />
-          <span>For Business</span>
-        </div>
-        <div className="flex flex-col items-center text-yellow-600 hover:text-yellow-700">
-          <Star fill="currentColor" size={18} />
-          <span className="text-xs">Try Premium</span>
-        </div>
-      </div>
-    </nav>
+    </div>
   );
 };
 
-export default NavigationBar;
+export default FeedNavigationBar;
