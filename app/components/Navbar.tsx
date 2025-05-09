@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

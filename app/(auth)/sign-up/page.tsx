@@ -83,7 +83,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <> b
+    <>
+      {" "}
+      b
       <FeedNavigationBar />
       {!data?.user && (
         <div className="container mx-auto min-h-[calc(100vh-3rem)] flex items-center justify-center bg-[#F1F1DB]">
