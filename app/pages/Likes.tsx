@@ -18,7 +18,7 @@ interface Like {
   userId: string;
 }
 
-const Likes = ({ postId }: LikesProps) => {
+export const Likes = ({ postId }: LikesProps) => {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -97,5 +97,3 @@ const Likes = ({ postId }: LikesProps) => {
     </Button>
   );
 };
-
-export default Likes;

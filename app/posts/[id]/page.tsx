@@ -85,7 +85,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Likes from "../../pages/likes";
+import { Likes } from "../../pages/likes";
 import Comments from "@/app/pages/comments";
 import { serverUrl } from "@/environment";
 
