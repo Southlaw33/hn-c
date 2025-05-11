@@ -1,8 +1,14 @@
+
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { serverUrl } from "@/environment";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
 interface CommentsProps {
   postId: string;
@@ -12,18 +18,22 @@ interface Comment {
   id: string;
   content: string;
   userId: string;
-  createdAt: string; // use string since JSON dates come as strings
+  createdAt: string;
   updatedAt: string;
   postId: string | null;
 }
 
 const Comments = ({ postId }: CommentsProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsCount, setCommentsCount] = useState<number>(0);
   const [content, setContent] = useState("");
   const [showComments, setShowComments] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Fetch full comments list
   const fetchComments = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
         credentials: "include",
@@ -31,42 +41,51 @@ const Comments = ({ postId }: CommentsProps) => {
       if (response.ok) {
         const data = await response.json();
         setComments(data.comments);
+        setCommentsCount(data.comments.length); // update count after fetch
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to fetch comments", error.message);
-      } else {
-        console.error("Failed to fetch comments");
-      }
+    } catch {
+      console.error("Failed to fetch comments");
+    } finally {
+      setLoading(false);
     }
+  }, [postId]);
+
+  // Fetch only count on mount
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCommentsCount(data.comments.length);
+        }
+      } catch {
+        console.error("Failed to fetch comment count");
+      }
+    };
+
+    fetchCount();
   }, [postId]);
 
   const handleAddComment = async () => {
     try {
       const response = await fetch(`${serverUrl}/comments/on/${postId}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ content }),
       });
 
-      if (response.status === 401) {
-        router.push("/login");
-        return;
-      }
+      if (response.status === 401) return router.push("/login");
 
       if (response.ok) {
         setContent("");
-        fetchComments(); // Refresh comments after adding
+        fetchComments();
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to add comment", error.message);
-      } else {
-        console.error("Failed to add comment");
-      }
+    } catch {
+      console.error("Failed to add comment");
     }
   };
 
@@ -77,81 +96,70 @@ const Comments = ({ postId }: CommentsProps) => {
         credentials: "include",
       });
 
-      if (response.status === 401) {
-        router.push("/login");
-        return;
-      }
+      if (response.status === 401) return router.push("/login");
 
       if (response.ok) {
-        setComments((prevComments) =>
-          prevComments.filter((comment) => comment.id !== commentId)
-        );
+        setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+        setCommentsCount((prev) => prev - 1);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("Failed to delete comment", error.message);
-      } else {
-        console.error("Failed to delete comment");
-      }
+    } catch {
+      console.error("Failed to delete comment");
     }
   };
 
-  const toggleComments = () => {
-    setShowComments((prev) => !prev);
-  };
-
-  useEffect(() => {
-    fetchComments(); // Safe to use here due to useCallback
-  }, [fetchComments]);
-
   return (
     <div className="w-full">
-      <button
-        onClick={toggleComments}
-        className="text-sm text-green-600 hover:underline"
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => {
+          if (!showComments) fetchComments();
+          setShowComments(!showComments);
+        }}
       >
-        {showComments ? "Hide Comments" : "Show Comments"} ({comments.length})
-      </button>
+        {showComments ? "Hide Comments" : "Show Comments"} ({commentsCount})
+      </Button>
 
       {showComments && (
-        <div className="mt-4 space-y-4">
+        <div className="mt-3 space-y-3">
           <div className="flex gap-2">
-            <input
+            <Input
               type="text"
+              placeholder="Write a comment..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Write a comment..."
-              className="flex-1 border rounded px-3 py-1 text-sm"
             />
-            <button
-              onClick={handleAddComment}
-              className="px-4 py-1 text-white bg-green-600 rounded text-sm"
-            >
-              Comment
-            </button>
+            <Button onClick={handleAddComment}>Comment</Button>
           </div>
 
-          <div className="space-y-2">
-            {comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="flex justify-between items-center border p-2 rounded"
-              >
-                <div>
-                  <p className="text-gray-800 text-sm">{comment.content}</p>
-                  <p className="text-gray-400 text-xs">
-                    {new Date(comment.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleDeleteComment(comment.id)}
-                  className="text-red-500 text-xs hover:underline"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center mt-4">
+              <Spinner size={20} className="text-muted-foreground" />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {comments.map((comment) => (
+                <Card key={comment.id}>
+                  <CardContent className="p-3 flex justify-between">
+                    <div>
+                      <p className="text-sm">{comment.content}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(comment.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="text-red-500 p-0"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      Delete
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
