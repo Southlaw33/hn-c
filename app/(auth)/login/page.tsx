@@ -26,7 +26,7 @@
 //         username: loginData.username,
 //         password: loginData.password,
 //       });
-      
+
 //       if ('data' in response && response.data?.user) {
 //         router.push("/");
 //       } else {
@@ -39,7 +39,7 @@
 //       setIsLoading(false);
 //     }
 //   };
- 
+
 //   return (
 //     <>
 
@@ -93,7 +93,6 @@
 //   );
 // };
 // export default LoginPage;
-
 
 "use client";
 
@@ -158,7 +157,7 @@ const LoginPage = () => {
             <CardHeader>
               <CardTitle className="text-2xl text-center">Login</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 gap-2">
               <div>
                 <Label htmlFor="username">Username</Label>
                 <Input

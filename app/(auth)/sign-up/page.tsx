@@ -223,7 +223,7 @@ const SignUpPage = () => {
             <CardHeader>
               <CardTitle className="text-2xl text-center">Create Account</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 gap-2">
               <div>
                 <Label htmlFor="username">Username</Label>
                 <Input
