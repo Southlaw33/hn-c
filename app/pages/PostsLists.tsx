@@ -15,7 +15,8 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 import { serverUrl } from "@/environment";
-import { Likes } from "../pages/likes";
+import { Likes } from "../components/likes";
+
 import Comments from "./comments";
 
 interface Post {
