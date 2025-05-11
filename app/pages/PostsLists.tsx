@@ -167,7 +167,7 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 import { serverUrl } from "@/environment";
-import Likes from "./likes";
+import Likes from "../pages/likes";
 import Comments from "./comments";
 
 interface Post {

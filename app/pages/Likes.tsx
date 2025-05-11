@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -37,7 +35,9 @@ const Likes = ({ postId }: LikesProps) => {
       if (response.ok) {
         const data = await response.json();
         setLikes(data.likes || []);
-        setLiked(data.likes.some((like: Like) => like.userId === session?.user?.id));
+        setLiked(
+          data.likes.some((like: Like) => like.userId === session?.user?.id)
+        );
       }
     } catch (error) {
       console.error("Failed to fetch likes:", error);
