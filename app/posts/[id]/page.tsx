@@ -1,12 +1,9 @@
-
-
 // "use client";
 
 // import { useEffect, useState } from "react";
 // import { useParams } from "next/navigation";
 // import Likes from "@/app/pages/likes";
 // import Comments from "@/app/pages/comments";
-
 
 // interface Post {
 //   id: string;
@@ -54,7 +51,7 @@
 //       <div className="text-sm text-gray-600">
 //         Posted by{" "}
 //         {/* <Link href={`/user/${post.userId}`}>
-         
+
 //         </Link>{" "} */}
 //          <span className="font-medium text-blue-500 hover:underline">
 //             {post.user.username}
@@ -84,7 +81,6 @@
 
 // export default PostPage;
 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -111,9 +107,9 @@ const PostPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`${serverUrl}/posts/${id}`,{
-          method : "GET",
-          credentials : "include"
+        const response = await fetch(`${serverUrl}/posts/${id}`, {
+          method: "GET",
+          credentials: "include",
         });
         if (!response.ok) {
           throw new Error("Failed to fetch post.");
