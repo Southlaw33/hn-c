@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "HackerNews",
-  description: "An updated clone of HackerNews with Next.js by Atchutha Rao T A",
+  title: "Hacker News",
+  description: "Built by Kethan",
 };
 
 const RootLayout = ({ children }: PropsWithChildren) => {

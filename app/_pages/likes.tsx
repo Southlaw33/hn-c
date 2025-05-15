@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -18,7 +20,7 @@ interface Like {
   userId: string;
 }
 
-export const Likes = ({ postId }: LikesProps) => {
+const Likes = ({ postId }: LikesProps) => {
   const [likes, setLikes] = useState<Like[]>([]);
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -35,9 +37,7 @@ export const Likes = ({ postId }: LikesProps) => {
       if (response.ok) {
         const data = await response.json();
         setLikes(data.likes || []);
-        setLiked(
-          data.likes.some((like: Like) => like.userId === session?.user?.id)
-        );
+        setLiked(data.likes.some((like: Like) => like.userId === session?.user?.id));
       }
     } catch (error) {
       console.error("Failed to fetch likes:", error);
@@ -86,7 +86,7 @@ export const Likes = ({ postId }: LikesProps) => {
       size="sm"
       onClick={handleLike}
       disabled={mutating}
-      className={cn("gap-1", liked && "text-blue-600")}
+      className={cn("gap-1", liked && "text-red-600")}
     >
       {mutating ? (
         <Spinner size={16} className="mr-1" />
@@ -97,3 +97,5 @@ export const Likes = ({ postId }: LikesProps) => {
     </Button>
   );
 };
+
+export default Likes;
