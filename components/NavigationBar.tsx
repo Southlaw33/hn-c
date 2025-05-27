@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
@@ -17,12 +17,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOutIcon, UserIcon, Moon, Sun, Home, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const NavigationBar = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
   const { setTheme, theme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -36,6 +40,20 @@ const NavigationBar = () => {
       setIsLoading(false);
     }
   };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query)}`);
+      setShowSearch(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showSearch && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showSearch]);
 
   const user = data?.user;
 
@@ -68,15 +86,31 @@ const NavigationBar = () => {
             )}
           </Button>
 
-          {/* Search Button */}
+          {/* Search Toggle */}
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.push("/search")}
+            onClick={() => setShowSearch(!showSearch)}
             aria-label="Search"
           >
             <Search className="w-5 h-5" />
           </Button>
+
+          {/* Search Input Dropdown */}
+          {showSearch && (
+            <form
+              onSubmit={handleSearchSubmit}
+              className="absolute right-16 top-12 bg-background shadow-md rounded-md p-2 z-50"
+            >
+              <Input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search posts..."
+                className="w-64"
+              />
+            </form>
+          )}
 
           {/* Auth User Dropdown */}
           {!user ? (
