@@ -1,4 +1,3 @@
-
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { PropsWithChildren } from "react";
@@ -11,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Hacker News",
-  description: "Built by Kethan",
+  title: "InsightArc",
+  description: "Built by Atchutha",
 };
 
 const RootLayout = ({ children }: PropsWithChildren) => {
@@ -25,7 +24,6 @@ const RootLayout = ({ children }: PropsWithChildren) => {
           enableSystem
           disableTransitionOnChange
         >
-         
           <div className="min-h-screen flex flex-col bg-background text-foreground">
             <NavigationBar />
             <main className="flex-1 p-4 pt-[4.5rem]">{children}</main>
