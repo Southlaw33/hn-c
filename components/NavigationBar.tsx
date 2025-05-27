@@ -25,11 +25,12 @@ const NavigationBar = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      await betterAuthClient.signOut();
-      router.push("/login");
+      await betterAuthClient.signOut(); // Ensures BetterAuth clears the session
+      router.refresh(); // Forces refresh of server/client session state
+      router.push("/login"); // Redirect to login
     } catch (error) {
       console.error("Logout error:", error);
-      alert("Error while logging out.");
+      alert("There was an issue logging you out. Please try again.");
     } finally {
       setIsLoading(false);
     }
