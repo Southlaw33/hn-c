@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import Link from "next/link";
@@ -5,7 +7,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,7 +21,14 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LogOutIcon, UserIcon, Moon, Sun, Home, Search } from "lucide-react";
+import {
+  LogOutIcon,
+  UserIcon,
+  Moon,
+  Sun,
+  Home,
+  Search,
+} from "lucide-react";
 
 const NavigationBar = () => {
   const { data } = betterAuthClient.useSession();
@@ -29,10 +42,7 @@ const NavigationBar = () => {
     setIsLoading(true);
     try {
       await betterAuthClient.signOut();
-
-      // Force cache/state to refresh
-      router.replace("/login");
-      router.refresh(); // Ensures fresh session check
+      router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
       alert("Error while logging out.");
@@ -58,28 +68,17 @@ const NavigationBar = () => {
         {/* Left: Logo and Home */}
         <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.push("/")}
-            >
+            <Button variant="ghost" size="icon" onClick={() => router.push("/")}>
               <Home className="w-5 h-5" />
             </Button>
-            <Link
-              href="/"
-              className="text-lg font-semibold hover:text-primary hidden sm:block"
-            >
-              InsightArc
+            <Link href="/" className="text-lg font-semibold hover:text-primary hidden sm:block">
+              Insight Hub
             </Link>
           </div>
 
           {/* Search icon, theme toggle, user dropdown, login for small devices */}
           <div className="sm:hidden flex items-center gap-2 ml-auto">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowMobileSearch((prev) => !prev)}
-            >
+            <Button variant="ghost" size="icon" onClick={() => setShowMobileSearch((prev) => !prev)}>
               <Search className="w-5 h-5" />
             </Button>
             <Button
@@ -87,11 +86,7 @@ const NavigationBar = () => {
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               className="p-2"
             >
-              {theme === "light" ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
+              {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </Button>
 
             {!user ? (
@@ -103,11 +98,7 @@ const NavigationBar = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-0">
                     <Avatar className="h-6 w-6">
-                      {user.image ? (
-                        <AvatarImage src={user.image} />
-                      ) : (
-                        <AvatarFallback>{user.name[0]}</AvatarFallback>
-                      )}
+                      {user.image ? <AvatarImage src={user.image} /> : <AvatarFallback>{user.name[0]}</AvatarFallback>}
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
@@ -123,9 +114,7 @@ const NavigationBar = () => {
                       </Avatar>
                       <div className="text-sm max-w-[200px] truncate">
                         <p className="font-medium">{user.name}</p>
-                        <p className="text-muted-foreground text-xs break-words">
-                          {user.email}
-                        </p>
+                        <p className="text-muted-foreground text-xs break-words">{user.email}</p>
                       </div>
                     </div>
                   </DropdownMenuLabel>
@@ -149,10 +138,7 @@ const NavigationBar = () => {
         <div className="w-full sm:w-auto">
           {/* Mobile search bar */}
           {showMobileSearch && (
-            <form
-              onSubmit={handleSearch}
-              className="flex sm:hidden gap-2 items-center mt-2"
-            >
+            <form onSubmit={handleSearch} className="flex sm:hidden gap-2 items-center mt-2">
               <input
                 type="text"
                 placeholder="Search posts..."
@@ -168,10 +154,7 @@ const NavigationBar = () => {
           )}
 
           {/* Desktop search bar */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden sm:flex gap-2 items-center"
-          >
+          <form onSubmit={handleSearch} className="hidden sm:flex gap-2 items-center">
             <input
               type="text"
               placeholder="Search posts..."
@@ -192,11 +175,7 @@ const NavigationBar = () => {
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             className="p-2"
           >
-            {theme === "light" ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
-            )}
+            {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </Button>
 
           {!user ? (
@@ -206,16 +185,9 @@ const NavigationBar = () => {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex items-center gap-2 px-2"
-                >
+                <Button variant="ghost" className="flex items-center gap-2 px-2">
                   <Avatar className="h-6 w-6">
-                    {user.image ? (
-                      <AvatarImage src={user.image} />
-                    ) : (
-                      <AvatarFallback>{user.name[0]}</AvatarFallback>
-                    )}
+                    {user.image ? <AvatarImage src={user.image} /> : <AvatarFallback>{user.name[0]}</AvatarFallback>}
                   </Avatar>
                   <span className="text-sm hidden sm:inline">{user.name}</span>
                 </Button>
@@ -232,9 +204,7 @@ const NavigationBar = () => {
                     </Avatar>
                     <div className="text-sm max-w-[200px] truncate">
                       <p className="font-medium">{user.name}</p>
-                      <p className="text-muted-foreground text-xs break-words">
-                        {user.email}
-                      </p>
+                      <p className="text-muted-foreground text-xs break-words">{user.email}</p>
                     </div>
                   </div>
                 </DropdownMenuLabel>
