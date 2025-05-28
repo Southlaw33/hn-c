@@ -29,7 +29,10 @@ const NavigationBar = () => {
     setIsLoading(true);
     try {
       await betterAuthClient.signOut();
-      router.push("/login");
+
+      // Force cache/state to refresh
+      router.replace("/login");
+      router.refresh(); // Ensures fresh session check
     } catch (error) {
       console.error("Logout error:", error);
       alert("Error while logging out.");
@@ -66,7 +69,7 @@ const NavigationBar = () => {
               href="/"
               className="text-lg font-semibold hover:text-primary hidden sm:block"
             >
-              Insight Hub
+              InsightArc
             </Link>
           </div>
 
