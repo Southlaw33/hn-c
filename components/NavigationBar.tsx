@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTheme } from "next-themes";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { serverUrl } from "@/environment";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -25,13 +26,10 @@ const NavigationBar = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(
-        "https://hackernews.icyglacier-b3f6f0b7.centralindia.azurecontainerapps.io/api/auth/sign-out",
-        {
-          method: "POST",
-          credentials: "include", // this ensures cookies are sent
-        }
-      );
+      const res = await fetch(serverUrl, {
+        method: "POST",
+        credentials: "include", // this ensures cookies are sent
+      });
 
       if (!res.ok) {
         throw new Error(`Logout failed: ${res.status}`);
