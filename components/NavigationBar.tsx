@@ -29,7 +29,7 @@ import {
   Home,
   Search,
 } from "lucide-react";
-//trial checker
+
 const NavigationBar = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -214,7 +214,7 @@ const NavigationBar = () => {
                   Profile
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+                <DropdownMenuItem onClick={() => betterAuthClient.signOut()}>
                   <LogOutIcon className="mr-2 h-4 w-4" />
                   {isLoading ? "Logging out..." : "Logout"}
                 </DropdownMenuItem>
