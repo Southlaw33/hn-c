@@ -25,7 +25,18 @@ const NavigationBar = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      await betterAuthClient.signOut();
+      const res = await fetch(
+        "https://hackernews.icyglacier-b3f6f0b7.centralindia.azurecontainerapps.io/api/auth/sign-out",
+        {
+          method: "POST",
+          credentials: "include", // this ensures cookies are sent
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`Logout failed: ${res.status}`);
+      }
+
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
