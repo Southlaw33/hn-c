@@ -1,6 +1,8 @@
+
 import { Suspense } from "react";
 import SearchPageClient from "./SearchPageClient";
 import { Spinner } from "@/components/ui/spinner";
+
 const SearchPage = () => {
   return (
     <Suspense
@@ -14,4 +16,6 @@ const SearchPage = () => {
     </Suspense>
   );
 };
+
 export default SearchPage;
+

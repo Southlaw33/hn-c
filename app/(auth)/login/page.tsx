@@ -1,8 +1,12 @@
+
+
 "use client";
+
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Link from "next/link";
+
 import {
   Card,
   CardHeader,
@@ -13,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+
 const LoginPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -21,12 +26,14 @@ const LoginPage = () => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleLogin = async () => {
     setIsLoading(true);
     try {
@@ -34,6 +41,7 @@ const LoginPage = () => {
         username: loginData.username,
         password: loginData.password,
       });
+
       if ("data" in response && response.data?.user) {
         router.push("/");
       } else {
@@ -46,6 +54,7 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       {!data?.user && (
@@ -104,4 +113,5 @@ const LoginPage = () => {
     </>
   );
 };
+
 export default LoginPage;

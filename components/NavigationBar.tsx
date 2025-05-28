@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOutIcon, UserIcon, Moon, Sun, Home, Search } from "lucide-react";
+
 const NavigationBar = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -22,6 +24,7 @@ const NavigationBar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+
   const handleLogout = async () => {
     setIsLoading(true);
     try {
@@ -34,6 +37,7 @@ const NavigationBar = () => {
       setIsLoading(false);
     }
   };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -42,7 +46,9 @@ const NavigationBar = () => {
       setSearchTerm("");
     }
   };
+
   const user = data?.user;
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-background/70 border-b shadow-sm px-4 sm:px-6 py-3">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
@@ -63,6 +69,7 @@ const NavigationBar = () => {
               Insight Hub
             </Link>
           </div>
+
           {/* Search icon, theme toggle, user dropdown, login for small devices */}
           <div className="sm:hidden flex items-center gap-2 ml-auto">
             <Button
@@ -83,6 +90,7 @@ const NavigationBar = () => {
                 <Sun className="h-5 w-5" />
               )}
             </Button>
+
             {!user ? (
               <Link href="/login">
                 <Button size="sm">Login</Button>
@@ -133,6 +141,7 @@ const NavigationBar = () => {
             )}
           </div>
         </div>
+
         {/* Search bar */}
         <div className="w-full sm:w-auto">
           {/* Mobile search bar */}
@@ -154,6 +163,7 @@ const NavigationBar = () => {
               </Button>
             </form>
           )}
+
           {/* Desktop search bar */}
           <form
             onSubmit={handleSearch}
@@ -171,6 +181,7 @@ const NavigationBar = () => {
             </Button>
           </form>
         </div>
+
         {/* Desktop: Theme and user dropdown */}
         <div className="hidden sm:flex items-center gap-3">
           <Button
@@ -184,6 +195,7 @@ const NavigationBar = () => {
               <Sun className="h-5 w-5" />
             )}
           </Button>
+
           {!user ? (
             <Link href="/login">
               <Button>Login</Button>
@@ -241,4 +253,5 @@ const NavigationBar = () => {
     </nav>
   );
 };
+
 export default NavigationBar;

@@ -1,8 +1,12 @@
+
+
 "use client";
+
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Link from "next/link";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -13,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 const SignUpPage = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
@@ -23,12 +28,14 @@ const SignUpPage = () => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleSignUp = async () => {
     setIsLoading(true);
     try {
@@ -51,6 +58,7 @@ const SignUpPage = () => {
           },
         }
       );
+
       if (error) {
         alert(error.message || "Signup failed. Please try again.");
       }
@@ -61,15 +69,14 @@ const SignUpPage = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       {!data?.user && (
         <div className="min-h-[calc(100vh-3rem)] flex items-center justify-center px-4 bg-background text-foreground">
           <Card className="w-full max-w-md shadow-md border rounded-2xl">
             <CardHeader>
-              <CardTitle className="text-2xl text-center">
-                Create Account
-              </CardTitle>
+              <CardTitle className="text-2xl text-center">Create Account</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -139,4 +146,5 @@ const SignUpPage = () => {
     </>
   );
 };
+
 export default SignUpPage;
