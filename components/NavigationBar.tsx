@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useTheme } from "next-themes";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { serverUrl } from "@/environment";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -26,15 +25,7 @@ const NavigationBar = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(serverUrl, {
-        method: "POST",
-        credentials: "include", // this ensures cookies are sent
-      });
-
-      if (!res.ok) {
-        throw new Error(`Logout failed: ${res.status}`);
-      }
-
+      await betterAuthClient.signOut();
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -69,7 +60,7 @@ const NavigationBar = () => {
               href="/"
               className="text-lg font-semibold hover:text-primary hidden sm:block"
             >
-              InsightArc
+              Insight Hub
             </Link>
           </div>
           {/* Search icon, theme toggle, user dropdown, login for small devices */}
