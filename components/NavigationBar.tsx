@@ -29,7 +29,7 @@ import {
   Home,
   Search,
 } from "lucide-react";
-
+//trial checker
 const NavigationBar = () => {
   const { data } = betterAuthClient.useSession();
   const router = useRouter();
